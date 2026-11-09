@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T❤️H - Bảo vệ bạn khỏi Website lừa đảo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --gray-light: #f5f5f5;
+            --gray-medium: #e0e0e0;
+            --gray-dark: #424242;
+            --danger: #d32f2f;
+            --warning: #f57c00;
+            --safe: #388e3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gray-light) 0%, var(--gray-medium) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--gray-dark);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4rem 0;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 3rem;
+        }
+
+        .scan-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .scan-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-scan {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.3);
+        }
+
+        .result-column {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--gray-medium);
+            height: 100%;
+        }
+
+        .result-column.safe {
+            border-top: 4px solid var(--safe);
+        }
+
+        .result-column.warning {
+            border-top: 4px solid var(--warning);
+        }
+
+        .result-column.danger {
+            border-top: 4px solid var(--danger);
+        }
+
+        .status-badge {
+            font-size: 1.2em;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .progress {
+            height: 25px;
+            border-radius: 12px;
+            background: var(--gray-light);
+            overflow: hidden;
+            border: 2px solid var(--gray-medium);
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+            line-height: 21px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-medium);
+        }
+
+        .info-item:hover {
+            transform: translateX(5px);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid var(--gray-medium);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading-animation {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .security-shield {
+            font-size: 4rem;
+            color: var(--primary);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .footer {
+            background: var(--gray-dark);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .url-display {
+            background: var(--gray-light);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            word-break: break-all;
+            font-family: monospace;
+            border: 1px solid var(--gray-medium);
+        }
+
+        .analysis-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-medium);
+        }
+
+        .icon-bullet {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        /* Modal styles đơn giản */
+        .modal-header.bg-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .modal-header.bg-success {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+        }
+
+        /* Hiệu ứng cho nút báo cáo */
+        .btn-report {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="#">
+                <i class="fas fa-shield-alt me-2"></i>An Ninh Số
+            </a>    
+        </div>
+
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Bảo vệ bạn khỏi Website lừa đảo</h1>
+                    <p class="lead mb-4">Sử dụng AI tiên tiến để phân tích và cảnh báo các URL độc hại. Bảo vệ thông tin cá nhân của bạn chỉ với một cú nhấp chuột.</p>
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="text-center">
+                            <div class="stats-number">95%</div>
+                            <div>Độ chính xác</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-number">25+</div>
+                            <div>Đặc trưng phân tích</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-number">0s</div>
+                            <div>Thời gian chờ</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="security-shield">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Scanner Card -->
+                <div class="scan-card">
+                    <div class="card-body p-4">
+                        <h3 class="card-title text-center mb-4">
+                            <i class="fas fa-search me-2 text-primary"></i>Quét URL Ngay bây giờ
+                        </h3>
+                        <form id="urlForm">
+                            <div class="mb-4">
+                                <label for="urlInput" class="form-label fw-bold fs-5">
+                                    <i class="fas fa-link me-2 text-primary"></i>Nhập URL cần kiểm tra
+                                </label>
+                                <input type="text" class="form-control form-control-lg border-2"
+                                       id="urlInput" placeholder="https://example.com" required
+                                       style="border-radius: 15px; padding: 15px; border-color: var(--gray-medium);">
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1 text-primary"></i>
+                                    Hệ thống sẽ phân tích 25 đặc trưng bảo mật để đánh giá độ an toàn
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-scan text-white w-100 py-3">
+                                <i class="fas fa-shield-alt me-2"></i>QUÉT BẢO MẬT NGAY
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Loading Animation -->
+                <div id="loading" class="loading">
+                    <div class="loading-animation">
+                        <div class="spinner-border text-primary mb-3" style="width: 4rem; height: 4rem;" role="status">
+                            <span class="visually-hidden">Đang kiểm tra...</span>
+                        </div>
+                        <h4 class="text-primary mb-2">🛡️ Đang phân tích với AI...</h4>
+                        <p class="text-muted">Hệ thống đang kiểm tra 25+ đặc trưng bảo mật</p>
+                        <div class="progress mt-3" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results in 3 Columns -->
+                <div id="results" class="results-container"></div>
+
+                <!-- Features -->
+                <div class="row mt-5">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-robot feature-icon"></i>
+                            <h5>AI Thông Minh</h5>
+                            <p class="text-muted">Machine Learning tiên tiến phân tích 25+ đặc trưng bảo mật</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-bolt feature-icon"></i>
+                            <h5>Tốc Độ Cao</h5>
+                            <p class="text-muted">Kiểm tra tức thì với kết quả chính xác trong vài giây</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-database feature-icon"></i>
+                            <h5>Cập Nhật Liên Tục</h5>
+                            <p class="text-muted">Hệ thống luôn được cập nhật các mối đe dọa mới nhất</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-shield-alt me-2"></i>SecureScan</h5>
+                    <p>Hệ thống bảo vệ người dùng khỏi các website lừa đảo bằng công nghệ AI tiên tiến.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Trang chủ</a></li>
+                        <li><a href="#" class="text-light">Giới thiệu</a></li>
+                        <li><a href="#" class="text-light">Bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> support@securescan.vn</li>
+                        <li><i class="fas fa-phone me-2"></i> 1900 1234</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p>&copy; 2024 SecureScan. Bảo vệ cộng đồng mạng Việt Nam.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Xác Nhận Báo Cáo Đơn Giản -->
+    <div class="modal fade" id="confirmReportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-database me-2"></i>Lưu URL Vào Hệ Thống
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-save text-primary" style="font-size: 3rem;"></i>
+                    </div>
+
+                    <p>URL này sẽ được tự động phân loại và lưu vào:</p>
+
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-alt me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <strong id="classificationText"></strong><br>
+                                <small id="fileInfo"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Hệ thống sẽ tự động gán nhãn dựa trên kết luận AI hiện tại.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="submitSimpleReport()">
+                        <i class="fas fa-save me-2"></i>ĐỒNG Ý LƯU
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thành Công Đơn Giản -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>Thành Công
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="text-success mb-3">Cảm ơn bạn đã góp phần công sức giúp bảo vệ an toàn trên không gian mạng</h4>
+                    <p>Chúng tôi luôn trân trọng sự đóng góp quý báu từ cộng đồng. Chúng tôi trân trọng và cảm ơn  </p>
+                    <p>T❤️H </p>
+
+                    <div class="alert alert-success mt-3">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-clock me-2"></i>
+                            <span id="reportTimestamp"></span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-3">
+                        <small>
+                            <i class="fas fa-database me-1"></i>
+                            Dữ liệu này sẽ giúp cải thiện độ chính xác của AI
+                        </small>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success w-100" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục
+        let currentReportUrl = '';
+        let currentVerdict = '';
+
+        // Xử lý form kiểm tra URL
+        document.getElementById('urlForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value.trim();
+            if (url) {
+                checkSingleUrl(url);
+            }
+        });
+
+        function checkSingleUrl(url) {
+            showLoading();
+
+            fetch('/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("📊 FULL RESPONSE:", data);
+                hideLoading();
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showThreeColumnResult(data);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fetch error:', error);
+                hideLoading();
+                showError('Lỗi kết nối đến server: ' + error.message);
+            });
+        }
+
+        function showThreeColumnResult(result) {
+            const resultsDiv = document.getElementById('results');
+            console.log("🎯 Hiển thị kết quả 3 cột:", result);
+
+            // Xác định trạng thái
+            const statusClass = result.status === 'danger' ? 'danger' :
+                              result.malicious_probability > 30 ? 'warning' : 'safe';
+
+            const urlType = result.url_type || 'general';
+
+            // Config cho loại URL
+            const typeConfig = {
+                'university': { name: 'ĐẠI HỌC', icon: 'fa-graduation-cap', color: 'info' },
+                'government': { name: 'CHÍNH PHỦ', icon: 'fa-landmark', color: 'primary' },
+                'company': { name: 'DOANH NGHIỆP', icon: 'fa-building', color: 'success' },
+                'organization': { name: 'TỔ CHỨC', icon: 'fa-handshake', color: 'warning' },
+                'general': { name: 'WEBSITE', icon: 'fa-globe', color: 'secondary' }
+            };
+
+            const typeInfo = typeConfig[urlType] || typeConfig.general;
+
+            // Config cho trạng thái
+            const statusConfig = {
+                danger: { text: 'NGUY HIỂM', icon: 'fa-skull-crossbones', color: 'danger' },
+                warning: { text: 'CẢNH BÁO', icon: 'fa-exclamation-triangle', color: 'warning' },
+                safe: { text: 'AN TOÀN', icon: 'fa-check-circle', color: 'success' }
+            };
+
+            const config = statusConfig[statusClass];
+
+            // Lấy reasons và recommendations
+            const reasons = result.reasons || generateFallbackReasons(result);
+            const recommendations = result.recommendations || generateFallbackRecommendations(result);
+
+            // Tạo HTML với 3 cột
+            resultsDiv.innerHTML = `
+                <div class="row g-4">
+                    <!-- CỘT 1: KẾT QUẢ PHÂN TÍCH -->
+                    <div class="col-lg-4">
+                        <div class="result-column ${statusClass}">
+                            <h4 class="analysis-title">
+                                <i class="fas fa-chart-bar me-2 text-primary"></i>KẾT QUẢ PHÂN TÍCH
+                            </h4>
+
+                            <div class="text-center mb-4">
+                                <div class="status-badge bg-${config.color} text-white mb-3">
+                                    <i class="fas ${config.icon} me-2"></i>${config.text}
+                                </div>
+
+                                <div class="url-display">
+                                    <i class="fas fa-link text-primary me-2"></i>
+                                    <small>${result.url}</small>
+                                </div>
+
+                                <div class="mt-3">
+                                    <span class="badge bg-${typeInfo.color} me-2 fs-6">
+                                        <i class="fas ${typeInfo.icon} me-1"></i>${typeInfo.name}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-percentage me-2 text-success"></i>ĐỘ TIN CẬY
+                                </h6>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small>AN TOÀN</small>
+                                        <small><strong>${result.safe_probability}%</strong></small>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" style="width: ${result.safe_probability}%">
+                                            ${result.safe_probability}%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small>RỦI RO</small>
+                                        <small><strong>${result.malicious_probability}%</strong></small>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-danger" style="width: ${result.malicious_probability}%">
+                                            ${result.malicious_probability}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-${config.color} mt-3">
+                                <h5 class="alert-heading mb-2">
+                                    <i class="fas fa-bell me-2"></i>KẾT LUẬN
+                                </h5>
+                                ${result.is_malicious ?
+                                    '<p class="mb-0">🚫 <strong>URL NGUY HIỂM</strong><br>Không nên truy cập</p>' :
+                                    '<p class="mb-0">✅ <strong>URL AN TOÀN</strong><br>Có thể truy cập</p>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT 2: LÝ DO PHÂN TÍCH -->
+                    <div class="col-lg-4">
+                        <div class="result-column">
+                            <h4 class="analysis-title">
+                                <i class="fas fa-search me-2 text-primary"></i>5 LÝ DO PHÂN TÍCH
+                                ${!result.reasons ? '<span class="badge bg-warning ms-2">TỰ ĐỘNG</span>' : ''}
+                            </h4>
+
+                            ${reasons.slice(0, 5).map((reason, index) => `
+                                <div class="info-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="icon-bullet"></div>
+                                        <div class="flex-grow-1">
+                                            <strong>${reason}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- CỘT 3: KHUYẾN NGHỊ HÀNH ĐỘNG -->
+                    <div class="col-lg-4">
+                        <div class="result-column">
+                            <h4 class="analysis-title">
+                                <i class="fas fa-lightbulb me-2 text-warning"></i>5 KHUYẾN NGHỊ HÀNH ĐỘNG
+                                ${!result.recommendations ? '<span class="badge bg-warning ms-2">TỰ ĐỘNG</span>' : ''}
+                            </h4>
+
+                            ${recommendations.slice(0, 5).map((rec, index) => `
+                                <div class="info-item" style="border-left-color: var(--warning);">
+                                    <div class="d-flex align-items-start">
+                                        <div class="icon-bullet" style="background: var(--warning);"></div>
+                                        <div class="flex-grow-1">
+                                            <strong>${rec}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+
+                            <!-- Nút báo cáo ĐƠN GIẢN -->
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-report w-100 py-3 mb-3"
+                                        onclick="showSimpleReportModal('${result.url}', ${result.is_malicious})">
+                                    <i class="fas fa-save me-2"></i>Báo cáo ngay
+                                </button>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    URL sẽ được tự động phân loại dựa trên kết luận AI
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateFallbackReasons(result) {
+            const maliciousProb = result.malicious_probability;
+            const urlType = result.url_type || 'general';
+
+            if (result.is_malicious || maliciousProb > 50) {
+                return [
+                    "Có dấu hiệu đáng ngờ từ cấu trúc URL",
+                    "Tên miền chứa từ khóa nghi vấn hoặc giả mạo",
+                    "Website có thể là bản sao của trang hợp pháp",
+                    "Xác suất rủi ro cao từ mô hình AI phân tích",
+                    "Được xác định là website lừa đảo tiềm năng"
+                ];
+            } else {
+                return [
+                    "URL có cấu trúc hợp lệ và bình thường",
+                    "Không phát hiện từ khóa nguy hiểm trong tên miền",
+                    "Website có vẻ thuộc tổ chức uy tín",
+                    "Xác suất rủi ro thấp từ phân tích AI",
+                    "URL an toàn theo đánh giá tự động"
+                ];
+            }
+        }
+
+        function generateFallbackRecommendations(result) {
+            const maliciousProb = result.malicious_probability;
+
+            if (result.is_malicious || maliciousProb > 50) {
+                return [
+                    "Tuyệt đối không truy cập URL này",
+                    "Không nhập bất kỳ thông tin cá nhân nào",
+                    "Xóa URL khỏi lịch sử trình duyệt",
+                    "Cảnh báo người thân, bạn bè về URL này",
+                    "Báo cáo cho cơ quan chức năng nếu là lừa đảo"
+                ];
+            } else {
+                return [
+                    "Có thể truy cập website một cách bình thường",
+                    "Vẫn nên kiểm tra kỹ website trước khi đăng nhập",
+                    "Bảo vệ thông tin cá nhân khi sử dụng website",
+                    "Sử dụng trình duyệt có tính năng bảo mật cao",
+                    "Cập nhật phần mềm chống virus thường xuyên"
+                ];
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Lỗi:</strong> ${message}
+                </div>
+            `;
+        }
+
+        // ==================== CHỨC NĂNG BÁO CÁO ĐƠN GIẢN ====================
+
+        // Hàm hiển thị modal xác nhận đơn giản
+        function showSimpleReportModal(url, isMalicious) {
+            currentReportUrl = url;
+            currentVerdict = isMalicious ? 'MALICIOUS' : 'SAFE';
+
+            // Cập nhật thông tin trong modal
+            const classification = isMalicious ? 'URL LỪA ĐẢO' : 'URL AN TOÀN';
+            const fileType = isMalicious ? 'malicious_urls.txt' : 'benign_urls.txt';
+            const colorClass = isMalicious ? 'text-danger' : 'text-success';
+
+            document.getElementById('classificationText').innerHTML =
+                `<span class="${colorClass}">${classification}</span>`;
+            document.getElementById('fileInfo').textContent =
+                `Lưu vào file: ${fileType} và report_logs.txt`;
+
+            // Hiển thị modal
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmReportModal'));
+            confirmModal.show();
+        }
+
+        // Hàm gửi báo cáo đơn giản
+        function submitSimpleReport() {
+            // Hiển thị loading
+            const submitBtn = document.querySelector('#confirmReportModal .btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
+            submitBtn.disabled = true;
+
+            // Gửi request đơn giản
+            fetch('/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: currentReportUrl,
+                    verdict: currentVerdict
+                    // KHÔNG CẦN gửi lý do
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi server: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Đóng modal xác nhận
+                const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmReportModal'));
+                confirmModal.hide();
+
+                // Hiển thị thời gian
+                const now = new Date();
+                const timestamp = now.toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('reportTimestamp').textContent = timestamp;
+
+                // Hiển thị modal thành công
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            })
+            .catch(error => {
+                console.error('Lỗi lưu URL:', error);
+                alert('❌ Có lỗi xảy ra khi lưu URL: ' + error.message);
+            })
+            .finally(() => {
+                // Khôi phục button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
+
+        console.log("✅ SecureScan Frontend Loaded - Phiên bản đơn giản");
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

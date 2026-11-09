@@ -1,0 +1,31 @@
+# 1. Bảo mật & Môi trường (CỰC KỲ QUAN TRỌNG)
+.env
+*.env
+env/
+venv/
+.venv/
+
+# 2. File tạm & Cấu hình PyCharm
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.idea/
+*.iml
+.vscode/
+
+# 3. Dữ liệu huấn luyện nặng (Tránh vượt quá giới hạn 100MB của GitHub)
+data/
+datasets/
+logs/
+*.csv
+*.tsv
+
+# 4. Ảnh biểu đồ phân tích (Không cần cho web chạy)
+models/*.png
+models/*.jpg
+models/*.jpeg
+
+# 5. Notebooks thử nghiệm
+notebooks/
+*.ipynb

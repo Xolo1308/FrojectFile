@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn cài đặt SecureShield</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d7c3f;
+            --primary-dark: #0a5c2e;
+            --primary-light: #4caf50;
+            --primary-gradient: linear-gradient(135deg, #0d7c3f 0%, #0a5c2e 100%);
+            --dark: #1a1a2e;
+            --gray-dark: #2d2d44;
+            --gray: #6c6c8a;
+            --gray-light: #f0f2f5;
+            --white: #ffffff;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --safe: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(13, 124, 63, 0.08);
+        }
+
+        .navbar-brand-custom {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand-custom i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+        }
+
+        .btn-back {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+            background: rgba(13, 124, 63, 0.06);
+        }
+
+        /* ===== HERO ===== */
+        .hero-install {
+            padding: 100px 0 60px;
+            background: linear-gradient(165deg, var(--white) 0%, var(--gray-light) 100%);
+            text-align: center;
+        }
+
+        .hero-install .badge {
+            background: rgba(13, 124, 63, 0.1);
+            color: var(--primary);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hero-install h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-top: 1rem;
+        }
+
+        .hero-install h1 span {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-install p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 1rem auto 0;
+        }
+
+        /* ===== STEP CARD ===== */
+        .step-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .step-card:hover {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .step-number {
+            min-width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .step-content p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content .code-block {
+            background: var(--dark);
+            color: #e0e0e0;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+
+        .step-content .code-block .highlight {
+            color: var(--primary-light);
+        }
+
+        .step-content .note {
+            font-size: 0.85rem;
+            color: var(--gray);
+            background: var(--gray-light);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .step-content .note i {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+
+        .step-content .badge-status {
+            font-size: 0.75rem;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+
+        .badge-status.success {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+
+        .badge-status.warning {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+
+        .badge-status.info {
+            background: rgba(52, 152, 219, 0.15);
+            color: #2980b9;
+        }
+
+        /* ===== DOWNLOAD CARD ===== */
+        .download-card {
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: white;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .download-card h3 {
+            font-weight: 800;
+        }
+
+        .download-card p {
+            opacity: 0.85;
+            margin-top: 0.5rem;
+        }
+
+        .download-btn {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            color: var(--primary);
+        }
+
+        .download-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* ===== VIDEO / GIF PLACEHOLDER ===== */
+        .demo-visual {
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            margin-top: 1.5rem;
+        }
+
+        .demo-visual i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-visual span {
+            font-size: 0.9rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 40px 0 20px;
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero-install h1 {
+                font-size: 2rem;
+            }
+            .step-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            .step-content .code-block {
+                font-size: 0.75rem;
+                padding: 0.6rem 1rem;
+                word-break: break-all;
+            }
+            .download-card {
+                padding: 1.5rem;
+            }
+            .step-number {
+                min-width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-install h1 {
+                font-size: 1.6rem;
+            }
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-custom">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <a class="navbar-brand-custom" href="/">
+                    <i class="fas fa-shield-alt"></i>An Ninh Số
+                </a>
+                <a href="/" class="btn-back">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero-install">
+        <div class="container">
+            <span class="badge"><i class="fas fa-download me-1"></i> Hướng dẫn cài đặt</span>
+            <h1>Cài đặt <span>SecureShield</span> trên trình duyệt</h1>
+            <p>Thực hiện theo các bước dưới đây để cài đặt tiện ích bảo vệ bạn khỏi các website lừa đảo.</p>
+        </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <section class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <!-- Bước 1 -->
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Tải file Extension</h4>
+                        <p>Nhấn vào nút bên dưới để tải file <strong>SecureShield.crx</strong> về máy tính của bạn.</p>
+                        <a href="#" class="download-btn" style="background: var(--primary-gradient); color: white; padding: 0.6rem 1.8rem; font-size: 0.95rem; margin-top: 0.5rem; display: inline-flex;">
+                            <i class="fas fa-download"></i> Tải SecureShield.crx
+                        </a>
+                       
+                    </div>
+                </div>
+
+                <!-- Bước 2 -->
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Mở trang quản lý tiện ích</h4>
+                        <p>Mở trình duyệt Chrome và nhập địa chỉ sau vào thanh URL:</p>
+                        <div class="code-block">
+                            <span class="highlight">chrome://extensions/</span>
+                        </div>
+                        <div class="note mt-2">
+                            <i class="fas fa-lightbulb"></i> Bạn cũng có thể truy cập bằng cách: <strong>Menu (⋮)</strong> → <strong>Tiện ích mở rộng</strong> → <strong>Quản lý tiện ích</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bước 3 -->
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Bật chế độ Nhà phát triển</h4>
+                        <p>Tại góc trên bên phải của trang <strong>chrome://extensions/</strong>, bật công tắc:</p>
+                        <div class="code-block">
+                            <span class="highlight">Chế độ nhà phát triển</span> <span style="color: #888;">(Developer mode)</span>
+                        </div>
+                        <div class="note mt-2">
+                            <i class="fas fa-check-circle" style="color: var(--safe);"></i> Sau khi bật, bạn sẽ thấy thêm các nút chức năng mới.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bước 4 -->
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Kéo thả file .crx vào trình duyệt</h4>
+                        <p>Kéo file <strong>SecureShield.crx</strong> từ thư mục <strong>Downloads</strong> thả vào trang <strong>chrome://extensions/</strong>.</p>
+                        <div class="note mt-2">
+                            <i class="fas fa-info-circle"></i> Hoặc nhấn nút <strong>Tải tiện ích đã giải nén</strong> và chọn thư mục chứa file.
+                        </div>
+                        <div class="demo-visual">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>Kéo thả file .crx vào đây</span>
+                            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.3);">
+                                (Hình ảnh minh họa)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bước 5 -->
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Xác nhận cài đặt</h4>
+                        <p>Trình duyệt sẽ hiển thị hộp thoại xác nhận. Nhấn <strong>Thêm tiện ích</strong> để hoàn tất.</p>
+                        <div class="note mt-2">
+                            <i class="fas fa-check-circle" style="color: var(--safe);"></i> Sau khi cài đặt, biểu tượng <i class="fas fa-shield-alt" style="color: var(--primary);"></i> sẽ xuất hiện trên thanh công cụ.
+                        </div>
+                        <div>
+                            <span class="badge-status success"><i class="fas fa-check me-1"></i> Đã cài đặt thành công</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== DOWNLOAD CARD ===== -->
+                <div class="download-card">
+                    <h3><i class="fas fa-shield-alt me-2"></i>Bảo vệ bạn ngay hôm nay</h3>
+                    <p>Tải SecureShield và bắt đầu duyệt web an toàn hơn.</p>
+                    <a href="#" class="download-btn">
+                        <i class="fas fa-download"></i> Tải SecureShield.crx
+                    </a>
+                    <div style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+                        <i class="fas fa-check-circle me-1"></i> Miễn phí · Không cần đăng ký · Bảo mật 100%
+                    </div>
+                </div>
+
+
+                <!-- ===== FAQ ===== -->
+                <div style="background: white; border-radius: 20px; padding: 2rem; margin-top: 2rem; border: 1px solid rgba(0,0,0,0.04);">
+                    <h4 style="font-weight: 700; margin-bottom: 1.5rem;">
+                        <i class="fas fa-question-circle me-2" style="color: var(--primary);"></i>Câu hỏi thường gặp
+                    </h4>
+                    <div style="margin-bottom: 1.2rem;">
+                        <h5 style="font-weight: 600; font-size: 1rem;">🔹 Tôi có cần tài khoản để sử dụng không?</h5>
+                        <p style="color: var(--gray); font-size: 0.95rem;">Không, SecureShield hoàn toàn miễn phí và không yêu cầu đăng ký tài khoản.</p>
+                    </div>
+                    <div style="margin-bottom: 1.2rem;">
+                        <h5 style="font-weight: 600; font-size: 1rem;">🔹 Extension có hoạt động trên các trình duyệt khác không?</h5>
+                        <p style="color: var(--gray); font-size: 0.95rem;">Hiện tại hỗ trợ Chrome. Phiên bản cho Edge và Firefox đang được phát triển.</p>
+                    </div>
+                    <div>
+                        <h5 style="font-weight: 600; font-size: 1rem;">🔹 Làm thế nào để gỡ cài đặt?</h5>
+                        <p style="color: var(--gray); font-size: 0.95rem;">Vào <strong>chrome://extensions/</strong>, tìm SecureShield và nhấn <strong>Gỡ cài đặt</strong>.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <a href="/" style="font-size: 1.4rem; font-weight: 800; color: white; text-decoration: none;">
+                        <i class="fas fa-shield-alt" style="color: var(--primary-light);"></i> SecureShield
+                    </a>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">© 2025 SecureShield. Bảo vệ cộng đồng mạng Việt Nam.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; margin-left: 1.5rem;">Hỗ trợ</a>
+                    <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; margin-left: 1.5rem;">Bảo mật</a>
+                    <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; margin-left: 1.5rem;">Liên hệ</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scroll cho các anchor
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        console.log('🛡️ SecureShield Install Page loaded successfully!');
+    </script>
+</body>
+</html>

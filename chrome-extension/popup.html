@@ -1,0 +1,121 @@
+<!-- popup.html - Phiên bản với tab Đăng nhập cho Agent -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>An Ninh Số</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🛡️</div>
+            <h2>An Ninh Số</h2>
+            <p class="subtitle" id="userStatus">🔍 Chưa đăng nhập</p>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display: flex; gap: 8px; margin: 12px 0; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+            <button class="tab-btn active" data-tab="scan" 
+                    style="padding: 6px 16px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                🔍 Kiểm tra
+            </button>
+            <button class="tab-btn" data-tab="login" 
+                    style="padding: 6px 16px; background: #eee; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                🔐 Đăng nhập
+            </button>
+            <button class="tab-btn" data-tab="blocked" 
+                    style="padding: 6px 16px; background: #eee; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                🔒 Đã chặn
+            </button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- TAB 1: KIỂM TRA URL                                           -->
+        <!-- ============================================================ -->
+        <div id="tab-scan" class="tab-content">
+            <div class="section">
+                <label class="label">🌐 URL hiện tại</label>
+                <div class="url-display" id="currentUrl">Đang tải...</div>
+            </div>
+            <button class="btn-primary" id="checkBtn">
+                🔍 Kiểm tra bảo mật
+            </button>
+            <div id="resultContainer">
+                <p class="hint">💡 Nhấn nút để kiểm tra URL hiện tại</p>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- TAB 2: ĐĂNG NHẬP                                             -->
+        <!-- ============================================================ -->
+        <div id="tab-login" class="tab-content" style="display: none;">
+            <div id="loginForm">
+                <div class="section">
+                    <label class="label">📧 Email</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="nhanvien@company.com" 
+                           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <div class="section">
+                    <label class="label">🔑 Mật khẩu</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" 
+                           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <button class="btn-primary" id="loginBtn">
+                    🔐 Đăng nhập
+                </button>
+                <div id="loginMessage" style="margin-top: 10px;"></div>
+            </div>
+            <div id="logoutSection" style="display: none;">
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 10px;">
+                    <p style="margin: 0;"><strong>👤 Đã đăng nhập</strong></p>
+                    <p style="margin: 5px 0 0;" id="loggedUser">user@company.com</p>
+                    <button class="btn-danger" id="logoutBtn" 
+                            style="margin-top: 10px; width: 100%; padding: 10px; background: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        🚪 Đăng xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- TAB 3: DANH SÁCH CHẶN (COLLAPSIBLE)                          -->
+        <!-- ============================================================ -->
+        <div id="tab-blocked" class="tab-content" style="display: none;">
+            <div class="collapsible-card" id="blocked-list-card">
+                <div class="collapsible-header" id="blocked-list-header">
+                    <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                        <span style="font-size: 16px;">🔒</span>
+                        <span style="font-weight: 600; font-size: 14px; color: #495057;">DANH SÁCH ĐÃ CHẶN</span>
+                        <span id="blockedCount" style="background: #e9ecef; color: #6c757d; font-size: 11px; padding: 2px 10px; border-radius: 12px; margin-left: auto;">
+                            0 domain
+                        </span>
+                        <span class="toggle-icon" style="font-size: 14px; color: #6c757d; transition: transform 0.3s;">▼</span>
+                    </div>
+                </div>
+                <div class="collapsible-content" style="display: none;">
+                    <div id="blockedList">
+                        <div style="text-align: center; padding: 20px; color: #999;">
+                            <div class="spinner"></div>
+                            <p style="margin-top: 8px;">Đang tải...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 12px; color: #6c757d; text-align: center;">
+                💡 Click để xem danh sách domain đã chặn
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span>⚡ Phân tích 25 đặc trưng</span>
+            <span>|</span>
+            <span>🤖 AI Powered</span>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

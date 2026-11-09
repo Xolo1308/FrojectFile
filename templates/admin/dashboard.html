@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - An Ninh Số</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d7c3f;
+            --primary-dark: #0a5c2e;
+        }
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            padding: 20px 0;
+            border-right: 1px solid #e0e0e0;
+        }
+        .sidebar .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(13, 124, 63, 0.06);
+            color: var(--primary);
+        }
+        .sidebar .nav-link.active {
+            background: rgba(13, 124, 63, 0.08);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .stat-card .icon {
+            font-size: 2rem;
+        }
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stat-card .label {
+            color: #6c6c8a;
+            font-size: 0.9rem;
+        }
+        .stat-card .number.online { color: #2e7d32; }
+        .stat-card .number.offline { color: #d32f2f; }
+        
+        /* ===== MODAL STYLES ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+        
+        .modal-body .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .modal-body label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .modal-body .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .modal-body .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .modal-footer .btn {
+            padding: 10px 25px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-footer .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .modal-footer .btn-secondary:hover {
+            background: #bdbdbd;
+        }
+        
+        .modal-footer .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-footer .btn-primary:hover {
+            opacity: 0.85;
+        }
+        
+        .modal-footer .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .modal-footer .btn-danger:hover {
+            background: #b71c1c;
+        }
+        
+        .btn-icon {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin: 0 2px;
+        }
+        
+        .btn-icon.edit {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-icon.edit:hover {
+            background: #1976D2;
+        }
+        
+        .btn-icon.delete {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .btn-icon.delete:hover {
+            background: #b71c1c;
+        }
+        
+        .agent-status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .agent-status-dot.online { background: #2e7d32; }
+        .agent-status-dot.offline { background: #9e9e9e; }
+
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .question-card .thumb {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .question-card .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .question-card .thumb i {
+            color: #ccc;
+            font-size: 24px;
+        }
+        .question-card .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .question-card .info .question-text {
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .question-card .info .meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .question-card .actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        #imagePreview img {
+            max-width: 150px;
+            max-height: 100px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            padding: 4px;
+        }
+
+        .training-status-pending {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .training-status-completed {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .btn-reset-training {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-reset-training:hover {
+            background: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i> SecureShield
+                </div>
+                <nav class="nav flex-column mt-3">
+                    <a class="nav-link active" href="#" data-page="dashboard">
+                        <i class="fas fa-chart-pie"></i> Tổng quan
+                    </a>
+                    <a class="nav-link" href="#" data-page="users">
+                        <i class="fas fa-users"></i> Nhân viên
+                    </a>
+                    <a class="nav-link" href="#" data-page="blocked">
+                        <i class="fas fa-ban"></i> Danh sách chặn
+                    </a>
+                    <a class="nav-link" href="#" data-page="logs">
+                        <i class="fas fa-history"></i> Lịch sử
+                    </a>
+                    <a class="nav-link" href="#" data-page="training">
+                        <i class="fas fa-graduation-cap"></i> Tập huấn
+                    </a>
+                    <a class="nav-link" href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 p-4" id="mainContent">
+                <!-- Nội dung sẽ được load bằng JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- ⭐ MODAL SỬA TÀI KHOẢN                      -->
+    <!-- ============================================= -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5><i class="fas fa-user-edit me-2"></i>Sửa tài khoản</h5>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label>Họ tên</label>
+                    <input type="text" class="form-control" id="editFullName" placeholder="Nhập họ tên">
+                </div>
+                <div class="form-group">
+                    <label>Phòng ban</label>
+                    <input type="text" class="form-control" id="editDepartment" placeholder="Nhập phòng ban">
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới (để trống nếu không đổi)</label>
+                    <input type="password" class="form-control" id="editPassword" placeholder="Nhập mật khẩu mới">
+                </div>
+                <div id="editMessage" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveEditUser()">
+                    <i class="fas fa-save me-1"></i>Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- ⭐ MODAL XÓA TÀI KHOẢN                      -->
+    <!-- ============================================= -->
+    <div class="modal-overlay" id="deleteUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5><i class="fas fa-exclamation-triangle me-2" style="color: #d32f2f;"></i>Xác nhận xóa</h5>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tài khoản này?</p>
+                <p><strong>Hành động này không thể hoàn tác!</strong></p>
+                <input type="hidden" id="deleteUserId">
+                <div id="deleteMessage" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Hủy</button>
+                <button class="btn btn-danger" onclick="confirmDeleteUser()">
+                    <i class="fas fa-trash me-1"></i>Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- ⭐ MODAL THÊM/SỬA CÂU HỎI TẬP HUẤN          -->
+    <!-- ============================================= -->
+    <div class="modal-overlay" id="questionModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h5 id="questionModalTitle"><i class="fas fa-plus-circle me-2" style="color: var(--primary);"></i>Thêm câu hỏi</h5>
+                <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="questionForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editQuestionId">
+                    
+                    <div class="form-group">
+                        <label>📷 Ảnh tình huống</label>
+                        <input type="file" class="form-control" id="questionImage" accept="image/*">
+                        <div id="imagePreview" class="mt-2"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>❓ Câu hỏi</label>
+                        <textarea class="form-control" id="questionText" rows="2" placeholder="Ví dụ: Đây có phải website chính thức không?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>✅ Đáp án đúng</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label><input type="radio" name="isReal" value="true"> 🟢 THẬT</label>
+                            <label><input type="radio" name="isReal" value="false" checked> 🔴 GIẢ</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📂 Danh mục</label>
+                        <select class="form-control" id="questionCategory">
+                            <option value="website">Website</option>
+                            <option value="email">Email</option>
+                            <option value="sms">Tin nhắn</option>
+                            <option value="call">Cuộc gọi</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📝 Giải thích</label>
+                        <textarea class="form-control" id="questionExplanation" rows="3" placeholder="Giải thích tại sao đây là thật/giả..."></textarea>
+                    </div>
+                    
+                    <div id="questionMessage" class="mt-2"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeQuestionModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveQuestion()">
+                    <i class="fas fa-save me-1"></i>Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // ⭐ BIẾN TOÀN CỤC
+        // =============================================
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+        
+        let currentPage = 'dashboard';
+        let trainingCache = {}; // Cache trạng thái training của users
+        
+        // =============================================
+        // ⭐ HÀM GỌI API
+        // =============================================
+        
+        async function apiFetch(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            return response.json();
+        }
+        
+        // =============================================
+        // ⭐ LOGOUT
+        // =============================================
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/admin/login';
+        }
+        
+        // =============================================
+        // ⭐ RESET BÀI TẬP (⭐ THÊM MỚI)
+        // =============================================
+        
+        async function resetTraining(userId, userName) {
+            if (!confirm(`Bạn có chắc muốn RESET bài tập cho nhân viên "${userName}"?\n\nHành động này sẽ XÓA TOÀN BỘ kết quả và cho phép nhân viên làm lại từ đầu!`)) {
+                return;
+            }
+            
+            try {
+                const result = await apiFetch('/api/admin/training/reset', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                if (result.success) {
+                    alert(`✅ Đã reset bài tập cho ${userName}!`);
+                    // Xóa cache để tải lại trạng thái mới
+                    delete trainingCache[userId];
+                    loadUsers(); // Tải lại danh sách
+                } else {
+                    alert(`❌ Lỗi: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Lỗi: ${error.message}`);
+            }
+        }
+        
+        // =============================================
+        // ⭐ KIỂM TRA TRẠNG THÁI BÀI TẬP (⭐ THÊM MỚI)
+        // =============================================
+        
+        async function checkTrainingStatus(userId) {
+            try {
+                // Kiểm tra cache trước
+                if (trainingCache[userId]) {
+                    return trainingCache[userId];
+                }
+                
+                const result = await apiFetch(`/api/training/check?user_id=${userId}`);
+                trainingCache[userId] = result;
+                return result;
+            } catch (error) {
+                console.error('Lỗi kiểm tra training:', error);
+                return { has_completed: false, score: 0 };
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD DASHBOARD
+        // =============================================
+        
+        async function loadDashboard() {
+            try {
+                const stats = await apiFetch('/api/admin/stats');
+                const agentsData = await apiFetch('/api/admin/agents');
+                const agents = agentsData.agents || [];
+                const onlineCount = agents.filter(a => a.is_online).length;
+                const totalCount = agents.length;
+                
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold">Tổng quan</h2>
+                        <span class="text-muted" id="currentTime"></span>
+                    </div>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="number">${stats.total_users || 0}</div>
+                                        <div class="label"><i class="fas fa-users me-1"></i>Nhân viên</div>
+                                    </div>
+                                    <div class="icon text-primary">👥</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="number online">${onlineCount}</div>
+                                        <div class="label"><i class="fas fa-circle text-success me-1"></i>Đang online</div>
+                                    </div>
+                                    <div class="icon text-success">🟢</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="number offline">${totalCount - onlineCount}</div>
+                                        <div class="label"><i class="fas fa-circle text-danger me-1"></i>Offline</div>
+                                    </div>
+                                    <div class="icon text-danger">🔴</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="number">${stats.total_blocked || 0}</div>
+                                        <div class="label"><i class="fas fa-ban me-1"></i>URL đã chặn</div>
+                                    </div>
+                                    <div class="icon text-danger">🚫</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-desktop me-2"></i>Agents đang online</span>
+                            <span class="badge bg-success ms-2">${onlineCount}/${totalCount}</span>
+                        </div>
+                        <div class="card-body">
+                            ${agents.length === 0 ? `
+                                <p class="text-muted text-center">Chưa có Agent nào đăng nhập</p>
+                            ` : `
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Máy</th>
+                                                <th>Nhân viên</th>
+                                                <th>Phòng ban</th>
+                                                <th>OS</th>
+                                                <th>Trạng thái</th>
+                                                <th>Lần cuối</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${agents.slice(0, 10).map(agent => `
+                                                <tr>
+                                                    <td><strong>${agent.agent_name}</strong></td>
+                                                    <td>${agent.user?.full_name || 'Unknown'}</td>
+                                                    <td>${agent.user?.department || '-'}</td>
+                                                    <td><small>${agent.os.split('(')[0].trim()}</small></td>
+                                                    <td>
+                                                        ${agent.is_online 
+                                                            ? '<span class="badge bg-success"><span class="agent-status-dot online"></span>Online</span>' 
+                                                            : '<span class="badge bg-secondary"><span class="agent-status-dot offline"></span>Offline</span>'
+                                                        }
+                                                    </td>
+                                                    <td><small>${agent.last_seen}</small></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                    ${agents.length > 10 ? `<p class="text-muted text-center mt-2">Hiển thị 10/${agents.length} Agent</p>` : ''}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+                
+                updateTime();
+                
+            } catch (error) {
+                console.error('Lỗi tải dashboard:', error);
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD DANH SÁCH NHÂN VIÊN (⭐ SỬA - THÊM RESET)
+        // =============================================
+        
+        async function loadUsers() {
+            try {
+                const data = await apiFetch('/api/admin/users');
+                
+                if (!data.success) {
+                    alert('Lỗi tải danh sách nhân viên');
+                    return;
+                }
+                
+                // Lấy trạng thái training cho từng user (KHÔNG PHẢI ADMIN)
+                const usersWithTraining = await Promise.all(data.users.map(async (user) => {
+                    if (user.role === 'admin') {
+                        return { ...user, training_status: 'admin', training_score: 0 };
+                    }
+                    
+                    try {
+                        const status = await checkTrainingStatus(user.id);
+                        return { 
+                            ...user, 
+                            training_status: status.has_completed ? 'completed' : 'pending',
+                            training_score: status.score || 0
+                        };
+                    } catch {
+                        return { ...user, training_status: 'unknown', training_score: 0 };
+                    }
+                }));
+                
+                let rows = usersWithTraining.map(user => `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.email}</td>
+                        <td>${user.full_name || '-'}</td>
+                        <td>${user.department || '-'}</td>
+                        <td>
+                            <span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}">
+                                ${user.role === 'admin' ? 'Admin' : 'User'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge ${user.status === 'active' ? 'bg-success' : user.status === 'blocked' ? 'bg-danger' : 'bg-warning'}">
+                                ${user.status}
+                            </span>
+                        </td>
+                        <td>
+                            ${user.role !== 'admin' ? `
+                                ${user.training_status === 'completed' 
+                                    ? `<span class="training-status-completed">✅ Đã làm (${user.training_score}đ)</span>`
+                                    : user.training_status === 'pending'
+                                    ? `<span class="training-status-pending">⏳ Chưa làm</span>`
+                                    : `<span class="badge bg-secondary">Chưa xác định</span>`
+                                }
+                            ` : '<span class="text-muted">-</span>'}
+                        </td>
+                        <td>
+                            ${user.role !== 'admin' ? `
+                                <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
+                                    ${user.training_status === 'completed' ? `
+                                        <button class="btn-reset-training" onclick="resetTraining(${user.id}, '${user.full_name || user.email}')" title="Reset bài tập">
+                                            <i class="fas fa-undo me-1"></i>Reset
+                                        </button>
+                                    ` : `
+                                        <span style="font-size: 11px; color: #999;">Chưa làm</span>
+                                    `}
+                                    <select class="form-select form-select-sm status-select" data-user="${user.id}" style="width: 90px; display: inline-block; margin-left: 4px; font-size: 12px; padding: 2px 6px;">
+                                        <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
+                                        <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                                        <option value="blocked" ${user.status === 'blocked' ? 'selected' : ''}>Blocked</option>
+                                    </select>
+                                    <button class="btn-icon edit" onclick="openEditModal(${user.id})" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="openDeleteModal(${user.id})" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold"><i class="fas fa-users me-2"></i>Quản lý nhân viên</h2>
+                        <button class="btn btn-success" onclick="toggleAddUserForm()">
+                            <i class="fas fa-user-plus me-1"></i>Thêm nhân viên
+                        </button>
+                    </div>
+                    
+                    <div id="addUserForm" style="display: none;" class="card mb-4">
+                        <div class="card-body">
+                            <h5><i class="fas fa-user-plus me-2"></i>Thêm nhân viên mới</h5>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-3">
+                                    <input type="email" class="form-control" id="newUserEmail" placeholder="Email">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="password" class="form-control" id="newUserPassword" placeholder="Mật khẩu">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="newUserName" placeholder="Họ tên">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" onclick="addNewUser()">
+                                        <i class="fas fa-save me-1"></i>Lưu
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="addUserMessage" class="mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Email</th>
+                                            <th>Họ tên</th>
+                                            <th>Phòng ban</th>
+                                            <th>Vai trò</th>
+                                            <th>Trạng thái</th>
+                                            <th>Bài tập</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Event listeners cho status select
+                document.querySelectorAll('.status-select').forEach(select => {
+                    select.addEventListener('change', async function() {
+                        const userId = this.dataset.user;
+                        const status = this.value;
+                        
+                        if (confirm('Bạn có chắc muốn thay đổi trạng thái này?')) {
+                            const result = await apiFetch(`/api/admin/users/${userId}/status`, {
+                                method: 'PUT',
+                                body: JSON.stringify({ status })
+                            });
+                            
+                            if (result.success) {
+                                alert('✅ Cập nhật trạng thái thành công!');
+                                loadUsers();
+                            } else {
+                                alert('❌ Lỗi: ' + result.error);
+                            }
+                        }
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Lỗi tải users:', error);
+                alert('Lỗi tải danh sách nhân viên');
+            }
+        }
+        
+        // =============================================
+        // ⭐ HIỂN THỊ FORM THÊM NHÂN VIÊN
+        // =============================================
+        
+        function toggleAddUserForm() {
+            const form = document.getElementById('addUserForm');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+        
+        // =============================================
+        // ⭐ THÊM NHÂN VIÊN MỚI
+        // =============================================
+        
+        async function addNewUser() {
+            const email = document.getElementById('newUserEmail').value.trim();
+            const password = document.getElementById('newUserPassword').value.trim();
+            const fullName = document.getElementById('newUserName').value.trim();
+            const message = document.getElementById('addUserMessage');
+            
+            if (!email || !password || !fullName) {
+                message.innerHTML = '<span style="color: #d32f2f;">⚠️ Vui lòng nhập đầy đủ thông tin</span>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        full_name: fullName,
+                        role: 'user'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    message.innerHTML = '<span style="color: #2e7d32;">✅ Thêm nhân viên thành công!</span>';
+                    document.getElementById('newUserEmail').value = '';
+                    document.getElementById('newUserPassword').value = '';
+                    document.getElementById('newUserName').value = '';
+                    setTimeout(() => {
+                        message.innerHTML = '';
+                        document.getElementById('addUserForm').style.display = 'none';
+                        // Xóa cache training
+                        trainingCache = {};
+                        loadUsers();
+                    }, 1500);
+                } else {
+                    message.innerHTML = `<span style="color: #d32f2f;">❌ ${result.error}</span>`;
+                }
+            } catch (error) {
+                message.innerHTML = `<span style="color: #d32f2f;">❌ Lỗi: ${error.message}</span>`;
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD DANH SÁCH CHẶN
+        // =============================================
+        
+        async function loadBlockedDomains() {
+            try {
+                const data = await apiFetch('/api/admin/blocked-domains');
+                
+                if (!data.success) {
+                    alert('Lỗi tải danh sách chặn');
+                    return;
+                }
+                
+                let rows = data.domains.map(d => `
+                    <tr>
+                        <td>${d.domain}</td>
+                        <td><span class="badge bg-warning">${d.type}</span></td>
+                        <td>${d.blocked_by}</td>
+                        <td>${d.is_company ? '🏢 Công ty' : '👤 Cá nhân'}</td>
+                        <td>${d.created_at}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteDomain(${d.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold"><i class="fas fa-ban me-2"></i>Danh sách chặn</h2>
+                        <button class="btn btn-success" onclick="showAddDomainForm()">
+                            <i class="fas fa-plus me-1"></i>Thêm domain
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Domain</th>
+                                            <th>Loại</th>
+                                            <th>Chặn bởi</th>
+                                            <th>Phạm vi</th>
+                                            <th>Ngày chặn</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rows || '<tr><td colspan="6" class="text-center">Chưa có domain nào bị chặn</td></tr>'}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Lỗi tải danh sách chặn:', error);
+            }
+        }
+        
+        // =============================================
+        // ⭐ THÊM DOMAIN CHẶN
+        // =============================================
+        
+        function showAddDomainForm() {
+            const html = `
+                <div class="card mt-3" id="addDomainForm">
+                    <div class="card-body">
+                        <h5><i class="fas fa-plus-circle me-2"></i>Thêm domain mới</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="newDomain" placeholder="example.com">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="newDomainType">
+                                    <option value="Lừa đảo">Lừa đảo</option>
+                                    <option value="Cờ bạc">Cờ bạc</option>
+                                    <option value="Phần mềm độc hại">Phần mềm độc hại</option>
+                                    <option value="18+">18+</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="isCompanyBlock" checked>
+                                    <label class="form-check-label" for="isCompanyBlock">
+                                        Chặn toàn công ty
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-success w-100" onclick="addDomain()">
+                                    <i class="fas fa-save me-1"></i>Lưu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const btn = document.querySelector('.btn-success');
+            btn.insertAdjacentHTML('afterend', html);
+            btn.style.display = 'none';
+        }
+        
+        async function addDomain() {
+            const domain = document.getElementById('newDomain').value.trim();
+            const type = document.getElementById('newDomainType').value;
+            const isCompany = document.getElementById('isCompanyBlock').checked;
+            
+            if (!domain) {
+                alert('⚠️ Vui lòng nhập domain');
+                return;
+            }
+            
+            const result = await apiFetch('/api/admin/blocked-domains', {
+                method: 'POST',
+                body: JSON.stringify({
+                    domain: domain,
+                    type: type,
+                    is_company: isCompany,
+                    reason: `Admin chặn - Loại: ${type}`
+                })
+            });
+            
+            if (result.success) {
+                alert('✅ Thêm domain thành công!');
+                loadBlockedDomains();
+            } else {
+                alert('❌ Lỗi: ' + result.error);
+            }
+        }
+        
+        async function deleteDomain(id) {
+            if (!confirm('Bạn có chắc muốn xóa domain này?')) return;
+            
+            const result = await apiFetch(`/api/admin/blocked-domains/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (result.success) {
+                alert('✅ Xóa domain thành công!');
+                loadBlockedDomains();
+            } else {
+                alert('❌ Lỗi: ' + result.error);
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD LỊCH SỬ
+        // =============================================
+        
+        async function loadLogs() {
+            try {
+                const data = await apiFetch('/api/admin/scan-logs');
+                
+                if (!data.success) {
+                    alert('Lỗi tải lịch sử');
+                    return;
+                }
+                
+                let rows = data.logs.map(log => `
+                    <tr>
+                        <td>${log.user_email}</td>
+                        <td><span title="${log.url}" style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${log.url}</span></td>
+                        <td>${log.domain}</td>
+                        <td><span class="badge ${log.score >= 70 ? 'bg-danger' : log.score >= 50 ? 'bg-warning' : 'bg-success'}">${log.score}%</span></td>
+                        <td><span class="badge ${log.risk === 'HIGH' ? 'bg-danger' : log.risk === 'MEDIUM' ? 'bg-warning' : 'bg-info'}">${log.risk}</span></td>
+                        <td><span class="badge ${log.action === 'blocked' ? 'bg-danger' : 'bg-secondary'}">${log.action}</span></td>
+                        <td>${log.scanned_at}</td>
+                    </tr>
+                `).join('');
+                
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold"><i class="fas fa-history me-2"></i>Lịch sử truy cập</h2>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Người dùng</th>
+                                            <th>URL</th>
+                                            <th>Domain</th>
+                                            <th>Điểm</th>
+                                            <th>Nguy cơ</th>
+                                            <th>Hành động</th>
+                                            <th>Thời gian</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rows || '<tr><td colspan="7" class="text-center">Chưa có lịch sử truy cập</td></tr>'}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Lỗi tải logs:', error);
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD TRANG TẬP HUẤN
+        // =============================================
+        
+        async function loadTraining() {
+            try {
+                const questionsData = await apiFetch('/api/admin/training/questions');
+                const statsData = await apiFetch('/api/admin/training/stats');
+                
+                const stats = statsData.stats || {};
+                const questions = questionsData.questions || [];
+                
+                let html = `
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold"><i class="fas fa-graduation-cap me-2" style="color: var(--primary);"></i>Quản lý tập huấn</h2>
+                        <button class="btn btn-success" onclick="openAddQuestionModal()">
+                            <i class="fas fa-plus me-1"></i>Thêm câu hỏi
+                        </button>
+                    </div>
+                    
+                    <!-- Thống kê -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="number">${stats.total_users || 0}</div>
+                                <div class="label">👥 Nhân viên đã làm</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="number">${stats.total_answers || 0}</div>
+                                <div class="label">📝 Tổng câu trả lời</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="number">${stats.accuracy || 0}%</div>
+                                <div class="label">🎯 Tỷ lệ đúng</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="number">${questions.length}</div>
+                                <div class="label">📚 Tổng câu hỏi</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bảng xếp hạng -->
+                    ${stats.top_users && stats.top_users.length > 0 ? `
+                        <div class="card mb-4">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="fas fa-trophy me-2" style="color: #f39c12;"></i>Bảng xếp hạng nhân viên
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nhân viên</th>
+                                                <th>Đúng</th>
+                                                <th>Tổng</th>
+                                                <th>Tỷ lệ</th>
+                                                <th>TB giây</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${stats.top_users.map((u, i) => `
+                                                <tr>
+                                                    <td>${i + 1}</td>
+                                                    <td>${u.full_name || u.email}</td>
+                                                    <td><span class="badge bg-success">${u.correct}</span></td>
+                                                    <td>${u.total}</td>
+                                                    <td>${Math.round(u.correct/u.total*100)}%</td>
+                                                    <td>${u.avg_time || 0}s</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Danh sách câu hỏi -->
+                    <div class="card">
+                        <div class="card-header bg-white fw-bold">
+                            <i class="fas fa-list me-2"></i>Danh sách câu hỏi (${questions.length})
+                        </div>
+                        <div class="card-body">
+                            ${questions.length > 0 ? questions.map(q => `
+                                <div class="question-card">
+                                    <div class="thumb">
+                                        ${q.image_url ? 
+                                            `<img src="${q.image_url}" alt="Hình ảnh">` :
+                                            `<i class="fas fa-image"></i>`
+                                        }
+                                    </div>
+                                    <div class="info">
+                                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px;">
+                                            <span class="badge ${q.is_real ? 'bg-success' : 'bg-danger'}">${q.is_real ? '🟢 THẬT' : '🔴 GIẢ'}</span>
+                                            <span class="badge bg-secondary">${q.category || 'Khác'}</span>
+                                            ${q.is_active !== false ? 
+                                                '<span class="badge bg-success">Hoạt động</span>' : 
+                                                '<span class="badge bg-secondary">Tạm dừng</span>'
+                                            }
+                                        </div>
+                                        <div class="question-text">${q.question}</div>
+                                        <div class="meta">${q.created_at || ''}</div>
+                                    </div>
+                                    <div class="actions">
+                                        <button class="btn-icon edit" onclick="openEditQuestionModal(${q.id})" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon delete" onclick="deleteQuestion(${q.id})" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <p class="text-center text-muted py-4">Chưa có câu hỏi nào. Hãy thêm câu hỏi đầu tiên!</p>
+                            `}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('mainContent').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Lỗi tải trang tập huấn:', error);
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="alert alert-danger">Lỗi tải dữ liệu: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // =============================================
+        // ⭐ MỞ MODAL THÊM CÂU HỎI
+        // =============================================
+        
+        function openAddQuestionModal() {
+            document.getElementById('questionModalTitle').innerHTML = 
+                '<i class="fas fa-plus-circle me-2" style="color: var(--primary);"></i>Thêm câu hỏi mới';
+            document.getElementById('editQuestionId').value = '';
+            document.getElementById('questionText').value = '';
+            document.getElementById('questionExplanation').value = '';
+            document.getElementById('questionCategory').value = 'website';
+            document.getElementById('questionImage').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('questionMessage').innerHTML = '';
+            document.querySelector('input[name="isReal"][value="false"]').checked = true;
+            
+            document.getElementById('questionModal').classList.add('active');
+        }
+        
+        // =============================================
+        // ⭐ MỞ MODAL SỬA CÂU HỎI
+        // =============================================
+        
+        async function openEditQuestionModal(id) {
+            try {
+                const data = await apiFetch('/api/admin/training/questions');
+                const q = data.questions.find(item => item.id === id);
+                
+                if (!q) {
+                    alert('Không tìm thấy câu hỏi');
+                    return;
+                }
+                
+                document.getElementById('questionModalTitle').innerHTML = 
+                    '<i class="fas fa-edit me-2" style="color: var(--primary);"></i>Sửa câu hỏi';
+                document.getElementById('editQuestionId').value = id;
+                document.getElementById('questionText').value = q.question;
+                document.getElementById('questionExplanation').value = q.explanation || '';
+                document.getElementById('questionCategory').value = q.category || 'website';
+                document.getElementById('questionMessage').innerHTML = '';
+                
+                if (q.is_real) {
+                    document.querySelector('input[name="isReal"][value="true"]').checked = true;
+                } else {
+                    document.querySelector('input[name="isReal"][value="false"]').checked = true;
+                }
+                
+                const preview = document.getElementById('imagePreview');
+                if (q.image_url) {
+                    preview.innerHTML = `
+                        <img src="${q.image_url}" alt="Ảnh hiện tại">
+                        <p style="font-size: 12px; color: #999; margin-top: 4px;">Ảnh hiện tại</p>
+                    `;
+                } else {
+                    preview.innerHTML = '';
+                }
+                
+                document.getElementById('questionImage').value = '';
+                document.getElementById('questionModal').classList.add('active');
+                
+            } catch (error) {
+                alert('Lỗi tải thông tin câu hỏi: ' + error.message);
+            }
+        }
+        
+        // =============================================
+        // ⭐ ĐÓNG MODAL CÂU HỎI
+        // =============================================
+        
+        function closeQuestionModal() {
+            document.getElementById('questionModal').classList.remove('active');
+        }
+        
+        // =============================================
+        // ⭐ LƯU CÂU HỎI
+        // =============================================
+        
+        async function saveQuestion() {
+            const id = document.getElementById('editQuestionId').value;
+            const question = document.getElementById('questionText').value.trim();
+            const explanation = document.getElementById('questionExplanation').value.trim();
+            const category = document.getElementById('questionCategory').value;
+            const isReal = document.querySelector('input[name="isReal"]:checked').value === 'true';
+            const imageFile = document.getElementById('questionImage').files[0];
+            const message = document.getElementById('questionMessage');
+            
+            if (!question) {
+                message.innerHTML = '<span style="color: #d32f2f;">⚠️ Vui lòng nhập câu hỏi</span>';
+                return;
+            }
+            
+            message.innerHTML = '<span style="color: #667eea;">⏳ Đang lưu...</span>';
+            
+            try {
+                const formData = new FormData();
+                formData.append('question', question);
+                formData.append('is_real', isReal);
+                formData.append('explanation', explanation);
+                formData.append('category', category);
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                }
+                
+                const url = id ? `/api/admin/training/questions/${id}` : '/api/admin/training/questions';
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    message.innerHTML = '<span style="color: #2e7d32;">✅ Lưu thành công!</span>';
+                    setTimeout(() => {
+                        closeQuestionModal();
+                        loadTraining();
+                    }, 1000);
+                } else {
+                    message.innerHTML = `<span style="color: #d32f2f;">❌ ${result.error}</span>`;
+                }
+                
+            } catch (error) {
+                message.innerHTML = `<span style="color: #d32f2f;">❌ Lỗi: ${error.message}</span>`;
+            }
+        }
+        
+        // =============================================
+        // ⭐ XÓA CÂU HỎI
+        // =============================================
+        
+        async function deleteQuestion(id) {
+            if (!confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+            
+            try {
+                const result = await apiFetch(`/api/admin/training/questions/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (result.success) {
+                    alert('✅ Xóa câu hỏi thành công!');
+                    loadTraining();
+                } else {
+                    alert('❌ Lỗi: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
+        
+        // =============================================
+        // ⭐ NAVIGATION
+        // =============================================
+        
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentPage = page;
+                
+                switch(page) {
+                    case 'dashboard':
+                        loadDashboard();
+                        break;
+                    case 'users':
+                        loadUsers();
+                        break;
+                    case 'blocked':
+                        loadBlockedDomains();
+                        break;
+                    case 'logs':
+                        loadLogs();
+                        break;
+                    case 'training':
+                        loadTraining();
+                        break;
+                }
+            });
+        });
+        
+        // =============================================
+        // ⭐ UPDATE TIME
+        // =============================================
+        
+        function updateTime() {
+            const el = document.getElementById('currentTime');
+            if (el) {
+                el.textContent = new Date().toLocaleString('vi-VN');
+            }
+        }
+        setInterval(updateTime, 1000);
+        
+        // =============================================
+        // ⭐ MODAL SỬA TÀI KHOẢN
+        // =============================================
+        
+        async function openEditModal(userId) {
+            try {
+                const data = await apiFetch('/api/admin/users');
+                const user = data.users.find(u => u.id === userId);
+                
+                if (!user) {
+                    alert('Không tìm thấy thông tin');
+                    return;
+                }
+                
+                document.getElementById('editUserId').value = userId;
+                document.getElementById('editFullName').value = user.full_name || '';
+                document.getElementById('editDepartment').value = user.department || '';
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editMessage').innerHTML = '';
+                
+                document.getElementById('editUserModal').classList.add('active');
+                
+            } catch (error) {
+                alert('Lỗi tải thông tin: ' + error.message);
+            }
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+            document.getElementById('editMessage').innerHTML = '';
+        }
+        
+        async function saveEditUser() {
+            const userId = document.getElementById('editUserId').value;
+            const fullName = document.getElementById('editFullName').value.trim();
+            const department = document.getElementById('editDepartment').value.trim();
+            const password = document.getElementById('editPassword').value.trim();
+            const message = document.getElementById('editMessage');
+            
+            message.innerHTML = '<span style="color: #667eea;">Đang lưu...</span>';
+            
+            try {
+                const result = await apiFetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ 
+                        full_name: fullName, 
+                        department: department,
+                        password: password 
+                    })
+                });
+                
+                if (result.success) {
+                    message.innerHTML = '<span style="color: #2e7d32;">✅ Cập nhật thành công!</span>';
+                    setTimeout(() => {
+                        closeEditModal();
+                        loadUsers();
+                    }, 1000);
+                } else {
+                    message.innerHTML = `<span style="color: #d32f2f;">❌ ${result.error}</span>`;
+                }
+            } catch (error) {
+                message.innerHTML = `<span style="color: #d32f2f;">❌ Lỗi: ${error.message}</span>`;
+            }
+        }
+        
+        // =============================================
+        // ⭐ MODAL XÓA TÀI KHOẢN
+        // =============================================
+        
+        function openDeleteModal(userId) {
+            document.getElementById('deleteUserId').value = userId;
+            document.getElementById('deleteMessage').innerHTML = '';
+            document.getElementById('deleteUserModal').classList.add('active');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteUserModal').classList.remove('active');
+            document.getElementById('deleteMessage').innerHTML = '';
+        }
+        
+        async function confirmDeleteUser() {
+            const userId = document.getElementById('deleteUserId').value;
+            const message = document.getElementById('deleteMessage');
+            
+            if (!confirm('Bạn có chắc chắn muốn xóa tài khoản này? Hành động này không thể hoàn tác!')) {
+                return;
+            }
+            
+            message.innerHTML = '<span style="color: #667eea;">Đang xóa...</span>';
+            
+            try {
+                const result = await apiFetch(`/api/admin/users/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (result.success) {
+                    message.innerHTML = '<span style="color: #2e7d32;">✅ Xóa thành công!</span>';
+                    setTimeout(() => {
+                        closeDeleteModal();
+                        // Xóa cache training
+                        trainingCache = {};
+                        loadUsers();
+                    }, 1000);
+                } else {
+                    message.innerHTML = `<span style="color: #d32f2f;">❌ ${result.error}</span>`;
+                }
+            } catch (error) {
+                message.innerHTML = `<span style="color: #d32f2f;">❌ Lỗi: ${error.message}</span>`;
+            }
+        }
+        
+        // =============================================
+        // ⭐ LOAD MẶC ĐỊNH
+        // =============================================
+        
+        loadDashboard();
+    </script>
+</body>
+</html>

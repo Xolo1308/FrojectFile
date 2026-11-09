@@ -1,0 +1,797 @@
+<!-- templates/training.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập nhận diện lừa đảo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d7c3f;
+            --primary-dark: #0a5c2e;
+            --primary-gradient: linear-gradient(135deg, #0d7c3f 0%, #0a5c2e 100%);
+        }
+        
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .navbar-custom {
+            background: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .navbar-brand-custom {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary) !important;
+            text-decoration: none;
+        }
+        
+        .navbar-brand-custom i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 80px auto 30px;
+            padding: 0 20px;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        
+        .question-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+        }
+        
+        .timer-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .timer-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            flex: 1;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .timer-bar .progress {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--primary);
+            transition: width 0.3s linear;
+            width: 100%;
+        }
+        
+        .timer-bar .progress.danger {
+            background: #d32f2f;
+        }
+        
+        .timer-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .options .btn-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .options .btn-option:hover {
+            border-color: var(--primary);
+            background: #f0f8f0;
+            transform: translateY(-2px);
+        }
+        
+        .options .btn-option.real {
+            color: #2e7d32;
+        }
+        
+        .options .btn-option.real:hover {
+            border-color: #2e7d32;
+            background: #e8f5e9;
+        }
+        
+        .options .btn-option.fake {
+            color: #d32f2f;
+        }
+        
+        .options .btn-option.fake:hover {
+            border-color: #d32f2f;
+            background: #ffebee;
+        }
+        
+        .options .btn-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+        }
+        
+        .options .btn-option.selected-real {
+            border-color: #2e7d32;
+            background: #e8f5e9;
+        }
+        
+        .options .btn-option.selected-fake {
+            border-color: #d32f2f;
+            background: #ffebee;
+        }
+        
+        .options .btn-option.correct {
+            border-color: #2e7d32;
+            background: #e8f5e9;
+        }
+        
+        .options .btn-option.wrong {
+            border-color: #d32f2f;
+            background: #ffebee;
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .result-box.correct {
+            background: #e8f5e9;
+            border: 2px solid #2e7d32;
+        }
+        
+        .result-box.wrong {
+            background: #ffebee;
+            border: 2px solid #d32f2f;
+        }
+        
+        .result-box.timeout {
+            background: #fff3e0;
+            border: 2px solid #f57c00;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .progress-stats .badge-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .next-btn {
+            padding: 10px 30px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(13, 124, 63, 0.3);
+        }
+        
+        .next-btn.show {
+            display: inline-block;
+        }
+        
+        /* Result Page */
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .result-page .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+        
+        .result-page .badge-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 576px) {
+            .options {
+                flex-direction: column;
+            }
+            .question-card {
+                padding: 20px;
+            }
+            .timer-container {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .timer-bar {
+                order: 3;
+                flex-basis: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand-custom" href="/">
+                <i class="fas fa-shield-alt"></i>An Ninh Số
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span id="userDisplay" style="font-weight: 500; color: var(--primary);">
+                    <i class="fas fa-user-circle me-1"></i> <span id="userName">Nhân viên</span>
+                </span>
+                <a href="/" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Quay lại
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="quiz-container" id="app">
+        <!-- Sẽ được render bằng JavaScript -->
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        // Kiểm tra đăng nhập
+        if (!token || !user) {
+            window.location.href = '/';
+        }
+
+        // Hiển thị tên user
+        document.getElementById('userName').textContent = user.full_name || user.email;
+
+        // =============================================
+        // ⭐ BIẾN TOÀN CỤC
+        // =============================================
+
+        let questions = [];
+        let currentIndex = 0;
+        let timerInterval = null;
+        let timeLeft = 10;
+        let isAnswered = false;
+        let startTime = 0;
+        let stats = {
+            total: 0,
+            correct: 0,
+            score: 0
+        };
+
+        // =============================================
+        // ⭐ HÀM GỌI API
+        // =============================================
+
+        async function apiFetch(url, options = {}) {
+            const response = await fetch(`${API_BASE}${url}`, {
+                ...options,
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            return response.json();
+        }
+
+        // =============================================
+        // ⭐ LOAD CÂU HỎI
+        // =============================================
+
+        async function loadQuestions() {
+            try {
+                const data = await apiFetch('/api/training/questions');
+                
+                if (!data.success) {
+                    alert('Lỗi tải câu hỏi: ' + data.error);
+                    return;
+                }
+                
+                questions = data.questions;
+                
+                if (questions.length === 0) {
+                    document.getElementById('app').innerHTML = `
+                        <div class="question-card text-center py-5">
+                            <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--primary);"></i>
+                            <h3 class="mt-3">Chưa có câu hỏi nào!</h3>
+                            <p class="text-muted">Admin chưa thêm câu hỏi tập huấn. Vui lòng quay lại sau.</p>
+                            <a href="/" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Kiểm tra tất cả đã trả lời chưa
+                const allAnswered = questions.every(q => q.is_answered);
+                
+                if (allAnswered && questions.length > 0) {
+                    showResultPage();
+                } else {
+                    // Tìm câu chưa trả lời đầu tiên
+                    const firstUnanswered = questions.findIndex(q => !q.is_answered);
+                    currentIndex = firstUnanswered !== -1 ? firstUnanswered : 0;
+                    renderQuestion();
+                }
+                
+            } catch (error) {
+                console.error('Lỗi:', error);
+                document.getElementById('app').innerHTML = `
+                    <div class="question-card text-center py-5">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #d32f2f;"></i>
+                        <h3 class="mt-3">Lỗi tải dữ liệu</h3>
+                        <p class="text-muted">${error.message}</p>
+                        <button class="btn btn-primary mt-3" onclick="loadQuestions()">Thử lại</button>
+                    </div>
+                `;
+            }
+        }
+
+        // =============================================
+        // ⭐ RENDER CÂU HỎI
+        // =============================================
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            const total = questions.length;
+            const answered = questions.filter(q => q.is_answered).length;
+            
+            const app = document.getElementById('app');
+            
+            // Nếu đã trả lời câu này, hiển thị kết quả
+            if (q.is_answered) {
+                renderAnsweredQuestion(q);
+                return;
+            }
+            
+            app.innerHTML = `
+                <div class="question-card">
+                    <div class="progress-stats">
+                        <span>
+                            <strong>Câu ${currentIndex + 1}/${total}</strong>
+                            <span class="badge-count ms-2">✅ ${answered} đã làm</span>
+                        </span>
+                        <span class="text-muted">${q.category || 'Khác'}</span>
+                    </div>
+                    
+                    <div class="timer-container">
+                        <span>⏱️ Thời gian</span>
+                        <div class="timer-bar">
+                            <div class="progress" id="timerProgress"></div>
+                        </div>
+                        <span class="timer-text" id="timerText">10s</span>
+                    </div>
+                    
+                    ${q.image_url ? `<img src="${q.image_url}" class="question-image" alt="Hình ảnh tình huống">` : `
+                        <div class="question-image d-flex align-items-center justify-content-center bg-light text-muted">
+                            <i class="fas fa-image fa-3x"></i>
+                            <span class="ms-2">Chưa có ảnh</span>
+                        </div>
+                    `}
+                    
+                    <div class="question-text">❓ ${q.question}</div>
+                    
+                    <div class="options">
+                        <button class="btn-option real" onclick="submitAnswer(true)" id="realBtn">
+                            🟢 THẬT
+                        </button>
+                        <button class="btn-option fake" onclick="submitAnswer(false)" id="fakeBtn">
+                            🔴 GIẢ
+                        </button>
+                    </div>
+                    
+                    <div class="result-box" id="resultBox"></div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                            <i class="fas fa-arrow-right me-1"></i>Câu tiếp theo
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Bắt đầu đếm ngược
+            startTimer();
+        }
+
+        // =============================================
+        // ⭐ RENDER CÂU ĐÃ TRẢ LỜI
+        // =============================================
+
+        function renderAnsweredQuestion(q) {
+            const total = questions.length;
+            const answered = questions.filter(q => q.is_answered).length;
+            
+            const app = document.getElementById('app');
+            
+            const isCorrect = q.user_correct;
+            const userChoice = q.user_choice;
+            const correctAnswer = q.is_real;
+            
+            app.innerHTML = `
+                <div class="question-card">
+                    <div class="progress-stats">
+                        <span>
+                            <strong>Câu ${currentIndex + 1}/${total}</strong>
+                            <span class="badge-count ms-2">✅ ${answered} đã làm</span>
+                        </span>
+                        <span class="badge ${isCorrect ? 'bg-success' : 'bg-danger'}">
+                            ${isCorrect ? '✅ Đúng' : '❌ Sai'}
+                        </span>
+                    </div>
+                    
+                    ${q.image_url ? `<img src="${q.image_url}" class="question-image" alt="Hình ảnh tình huống">` : `
+                        <div class="question-image d-flex align-items-center justify-content-center bg-light text-muted">
+                            <i class="fas fa-image fa-3x"></i>
+                            <span class="ms-2">Chưa có ảnh</span>
+                        </div>
+                    `}
+                    
+                    <div class="question-text">❓ ${q.question}</div>
+                    
+                    <div class="options">
+                        <button class="btn-option real ${userChoice === true ? (isCorrect ? 'correct' : 'wrong') : ''}" disabled>
+                            🟢 THẬT ${userChoice === true ? (isCorrect ? ' ✅' : ' ❌') : ''}
+                        </button>
+                        <button class="btn-option fake ${userChoice === false ? (isCorrect ? 'correct' : 'wrong') : ''}" disabled>
+                            🔴 GIẢ ${userChoice === false ? (isCorrect ? ' ✅' : ' ❌') : ''}
+                        </button>
+                    </div>
+                    
+                    <div class="result-box show ${isCorrect ? 'correct' : 'wrong'}">
+                        <h5>${isCorrect ? '✅ CHÍNH XÁC!' : '❌ SAI!'}</h5>
+                        <p><strong>Đáp án đúng:</strong> ${correctAnswer ? '🟢 THẬT' : '🔴 GIẢ'}</p>
+                        <p><strong>Bạn chọn:</strong> ${userChoice ? '🟢 THẬT' : '🔴 GIẢ'}</p>
+                        <p><strong>⏱️ Thời gian:</strong> ${q.time_taken}s</p>
+                        ${q.explanation ? `<hr><p><strong>📝 Giải thích:</strong> ${q.explanation}</p>` : ''}
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="next-btn show" onclick="nextQuestion()">
+                            <i class="fas fa-arrow-right me-1"></i>Câu tiếp theo
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =============================================
+        // ⭐ ĐẾM NGƯỢC
+        // =============================================
+
+        function startTimer() {
+            timeLeft = 10;
+            isAnswered = false;
+            startTime = Date.now();
+            
+            const progress = document.getElementById('timerProgress');
+            const text = document.getElementById('timerText');
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const percent = (timeLeft / 10) * 100;
+                
+                if (progress) {
+                    progress.style.width = percent + '%';
+                    if (timeLeft <= 3) {
+                        progress.classList.add('danger');
+                    } else {
+                        progress.classList.remove('danger');
+                    }
+                }
+                
+                if (text) {
+                    text.textContent = timeLeft + 's';
+                    if (timeLeft <= 3) {
+                        text.style.color = '#d32f2f';
+                    } else {
+                        text.style.color = '#333';
+                    }
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        // =============================================
+        // ⭐ XỬ LÝ HẾT GIỜ
+        // =============================================
+
+        async function handleTimeout() {
+            if (isAnswered) return;
+            isAnswered = true;
+            
+            const timeTaken = (Date.now() - startTime) / 1000;
+            
+            // Xem như sai
+            const q = questions[currentIndex];
+            
+            try {
+                await apiFetch('/api/training/answer', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        question_id: q.id,
+                        user_choice: false,
+                        time_taken: timeTaken
+                    })
+                });
+                
+                // Cập nhật câu hỏi
+                q.is_answered = true;
+                q.user_correct = false;
+                q.user_choice = false;
+                q.time_taken = timeTaken;
+                
+                // Hiển thị kết quả
+                const resultBox = document.getElementById('resultBox');
+                const realBtn = document.getElementById('realBtn');
+                const fakeBtn = document.getElementById('fakeBtn');
+                
+                if (realBtn) realBtn.disabled = true;
+                if (fakeBtn) fakeBtn.disabled = true;
+                
+                resultBox.className = 'result-box show timeout';
+                resultBox.innerHTML = `
+                    <h5>⏰ HẾT GIỜ!</h5>
+                    <p><strong>Đáp án đúng:</strong> ${q.is_real ? '🟢 THẬT' : '🔴 GIẢ'}</p>
+                    <p><strong>Bạn đã không trả lời kịp.</strong></p>
+                    ${q.explanation ? `<hr><p><strong>📝 Giải thích:</strong> ${q.explanation}</p>` : ''}
+                `;
+                
+                document.getElementById('nextBtn').classList.add('show');
+                
+            } catch (error) {
+                console.error('Lỗi lưu kết quả:', error);
+            }
+        }
+
+        // =============================================
+        // ⭐ NỘP CÂU TRẢ LỜI
+        // =============================================
+
+        async function submitAnswer(choice) {
+            if (isAnswered) return;
+            isAnswered = true;
+            
+            clearInterval(timerInterval);
+            
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const q = questions[currentIndex];
+            
+            // Disable buttons
+            document.getElementById('realBtn').disabled = true;
+            document.getElementById('fakeBtn').disabled = true;
+            
+            try {
+                const response = await apiFetch('/api/training/answer', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        question_id: q.id,
+                        user_choice: choice,
+                        time_taken: timeTaken
+                    })
+                });
+                
+                if (!response.success) {
+                    throw new Error(response.error || 'Lưu kết quả thất bại');
+                }
+                
+                const isCorrect = response.is_correct;
+                
+                // Cập nhật câu hỏi
+                q.is_answered = true;
+                q.user_correct = isCorrect;
+                q.user_choice = choice;
+                q.time_taken = timeTaken;
+                
+                // Hiển thị kết quả
+                const resultBox = document.getElementById('resultBox');
+                
+                resultBox.className = `result-box show ${isCorrect ? 'correct' : 'wrong'}`;
+                resultBox.innerHTML = `
+                    <h5>${isCorrect ? '✅ CHÍNH XÁC!' : '❌ SAI!'}</h5>
+                    <p><strong>Đáp án đúng:</strong> ${q.is_real ? '🟢 THẬT' : '🔴 GIẢ'}</p>
+                    <p><strong>Bạn chọn:</strong> ${choice ? '🟢 THẬT' : '🔴 GIẢ'}</p>
+                    <p><strong>⏱️ Thời gian:</strong> ${timeTaken.toFixed(1)}s</p>
+                    ${q.explanation ? `<hr><p><strong>📝 Giải thích:</strong> ${q.explanation}</p>` : ''}
+                `;
+                
+                // Highlight đáp án đúng
+                if (q.is_real) {
+                    document.getElementById('realBtn').classList.add('correct');
+                    if (!choice) document.getElementById('fakeBtn').classList.add('wrong');
+                } else {
+                    document.getElementById('fakeBtn').classList.add('correct');
+                    if (choice) document.getElementById('realBtn').classList.add('wrong');
+                }
+                
+                // Hiển thị nút tiếp theo
+                document.getElementById('nextBtn').classList.add('show');
+                
+            } catch (error) {
+                console.error('Lỗi:', error);
+                alert('Lỗi lưu kết quả: ' + error.message);
+                isAnswered = false;
+                document.getElementById('realBtn').disabled = false;
+                document.getElementById('fakeBtn').disabled = false;
+            }
+        }
+
+        // =============================================
+        // ⭐ CÂU TIẾP THEO
+        // =============================================
+
+        function nextQuestion() {
+            // Tìm câu chưa trả lời tiếp theo
+            const nextIndex = questions.findIndex((q, i) => i > currentIndex && !q.is_answered);
+            
+            if (nextIndex !== -1) {
+                currentIndex = nextIndex;
+                renderQuestion();
+            } else {
+                // Tất cả đã trả lời
+                showResultPage();
+            }
+        }
+
+        // =============================================
+        // ⭐ HIỂN THỊ TRANG KẾT QUẢ
+        // =============================================
+
+        async function showResultPage() {
+            try {
+                const data = await apiFetch('/api/training/score');
+                
+                if (!data.success) {
+                    alert('Lỗi tải điểm: ' + data.error);
+                    return;
+                }
+                
+                const s = data.stats;
+                
+                document.getElementById('app').innerHTML = `
+                    <div class="question-card result-page">
+                        <h2>🎉 HOÀN THÀNH BÀI TẬP!</h2>
+                        <p class="text-muted">Cảm ơn bạn đã tham gia tập huấn nhận diện lừa đảo.</p>
+                        
+                        <div class="score-circle">${s.score}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Điểm số</div>
+                        
+                        <div class="badge-display">
+                            <span class="badge bg-${s.badge_color} p-2 px-3">${s.badge}</span>
+                        </div>
+                        
+                        <div class="row g-3 mt-3 text-center">
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <div style="font-size: 1.5rem; font-weight: 700;">${s.total}</div>
+                                    <div style="font-size: 0.8rem; color: #666;">Tổng câu</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #2e7d32;">${s.correct}</div>
+                                    <div style="font-size: 0.8rem; color: #666;">Đúng</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #d32f2f;">${s.total - s.correct}</div>
+                                    <div style="font-size: 0.8rem; color: #666;">Sai</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3 text-muted">
+                            ⏱️ Trung bình: ${s.avg_time}s/câu
+                        </div>
+                        
+                        <div class="mt-4 d-flex gap-3 justify-content-center flex-wrap">
+                            <a href="/training" class="btn btn-primary">
+                                <i class="fas fa-redo me-1"></i>Làm lại
+                            </a>
+                            <a href="/" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-1"></i>Về trang chủ
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Lỗi:', error);
+            }
+        }
+
+
+        loadQuestions();
+    </script>
+</body>
+</html>
